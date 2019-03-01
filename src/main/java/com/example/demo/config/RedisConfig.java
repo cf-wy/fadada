@@ -6,6 +6,7 @@ import java.time.Duration;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
+@EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
 	@Bean
 	public KeyGenerator keyGenerator() {
@@ -47,8 +49,8 @@ public class RedisConfig extends CachingConfigurerSupport {
 	}
 
 	@Bean
-	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
-		RedisTemplate<String, Object> template = new RedisTemplate<>();
+	public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
+		RedisTemplate<String, String> template = new RedisTemplate<>();
 		template.setConnectionFactory(factory);
 		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(
 				Object.class);
@@ -56,10 +58,10 @@ public class RedisConfig extends CachingConfigurerSupport {
 		objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
 		objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 		jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-		// template.setKeySerializer(new StringRedisSerializer());
+		template.setKeySerializer(new StringRedisSerializer());
 		template.setValueSerializer(jackson2JsonRedisSerializer);
-		// template.setHashKeySerializer(new StringRedisSerializer());
-		// template.setHashValueSerializer(jackson2JsonRedisSerializer);
+		template.setHashKeySerializer(new StringRedisSerializer());
+		template.setHashValueSerializer(jackson2JsonRedisSerializer);
 		template.afterPropertiesSet();
 		return template;
 

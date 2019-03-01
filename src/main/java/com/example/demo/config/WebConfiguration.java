@@ -10,15 +10,15 @@ import com.example.demo.filter.MyFilter;
 @Configuration
 public class WebConfiguration {
 
-	/*@Bean
+	@Bean
 	public RemoteIpFilter remoteIpFilter() {
 		return new RemoteIpFilter();
-	}*/
+	}
 
 	@Bean
-	public FilterRegistrationBean testFilterRegistration() {
+	public FilterRegistrationBean<MyFilter> testFilterRegistration() {
 
-		FilterRegistrationBean registration = new FilterRegistrationBean();
+		FilterRegistrationBean<MyFilter> registration = new FilterRegistrationBean<>();
 		registration.setFilter(new MyFilter());
 		registration.addUrlPatterns("/*");
 		registration.addInitParameter("paramName", "paramValue");
